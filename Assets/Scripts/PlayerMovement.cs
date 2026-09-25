@@ -6,16 +6,18 @@ public class PlayerMovement : MonoBehaviour
     private float mouseSens = 300f, moveSpeed = 5f, vRotation, mouseX, mouseY, kbH, kbV, camFOV = 60f;
     private enum MovementState {Normal, Sprinting, Crouching}
     private MovementState CurrentMovementState;
-    void Start()
+
+    void Start() // Implementa variables para el control de primera persona.
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         camTransform = GetComponentInChildren<Camera>().transform;
         camFOV = GetComponentInChildren<Camera>().fieldOfView;
     }
-    void Update()
+
+    void Update() // Actualiza variables dependiendo del state -> Agarra Inputs de movimiento -> Mueve
     {
-        StateCheck();
+        StateCheck(); 
         mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * mouseSens;
         mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * mouseSens;
         kbH = Input.GetAxisRaw("Horizontal") * Time.deltaTime * moveSpeed;
@@ -23,26 +25,27 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
-    void StateCheck()
+    void StateCheck() // Cambia los states dependiendo en que teclas esten apretadas y luego cambia las variables dependiendo en los states.
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
             if (kbH != 0 || kbV != 0)
             {
-                CurrentMovementState = MovementState.Sprinting;
+                CurrentMovementState = MovementState.Sprinting; // Si tiene shift apretado y se mueve, esta corriendo.
             }
         }
         else if (Input.GetKey(KeyCode.LeftControl))
         {
-            CurrentMovementState = MovementState.Crouching;
+            CurrentMovementState = MovementState.Crouching; // Si tiene control apretado, esta agachado.
         }
         else
         {
             CurrentMovementState = MovementState.Normal;
         }
-        switch (CurrentMovementState)
+
+        switch (CurrentMovementState) // La velocidad, FOV y posicion de la camara cambian dependiendo del estado.
         {
-            case MovementState.Normal:
+            case MovementState.Normal: 
                 moveSpeed = 5f;
                 Camera.main.fieldOfView = 60f;
                 camTransform.localPosition = new Vector3(0, 0.75f, 0);
@@ -58,7 +61,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    void Move()
+    void Move() // Rota camara y desplaza al player.
     {
         vRotation -= mouseY;
         vRotation = Mathf.Clamp(vRotation, -90, 90);
