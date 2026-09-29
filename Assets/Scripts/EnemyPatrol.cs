@@ -7,7 +7,7 @@ public class EnemyPatrol : MonoBehaviour
 {
     private NavMeshAgent agent;
     private LayerMask layerDetection;
-    private float currentIdleTime, elapsedIdleTime, LOS, rayDistance = 10000f;
+    private float currentIdleTime, elapsedIdleTime, LOS, enemyRayDistance = 10000f;
     private enum STATE{Idle, Patroling, ChasingSound, ChasingPlayer}
     STATE currentState;
     private Transform playerTransform, eyes;
@@ -87,7 +87,7 @@ public class EnemyPatrol : MonoBehaviour
     {
         LOS = eyes.localEulerAngles.y;
         LOS = Mathf.Clamp(LOS, -90, 90);
-        if (Physics.Raycast(eyes.position, eyes.forward, out RaycastHit hit, rayDistance, layerDetection))
+        if (Physics.Raycast(eyes.position, eyes.forward, out RaycastHit hit, enemyRayDistance, layerDetection))
         {
             Debug.DrawRay(eyes.position, eyes.forward, Color.green);
             if (hit.transform.gameObject.name == "Player")

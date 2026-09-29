@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    private Transform camTransform;
+    [HideInInspector] public Transform camTransform;
     private float mouseSens = 300f, moveSpeed = 5f, vRotation, mouseX, mouseY, kbH, kbV, camFOV = 60f;
     private enum MovementState {Normal, Sprinting, Crouching}
     private MovementState CurrentMovementState;

@@ -1,16 +1,20 @@
+using TMPro;
 using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    private LayerMask layerDetection;
+    [SerializeField] private ItemScriptable[] inventory = new ItemScriptable[3];
 
-    // Update is called once per frame
-    void Update()
+    public void saveInInventory()
     {
-        
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            if (inventory[i] == null)
+            {
+                inventory[i] = GetComponent<uiManager>().itemSave;
+                break;
+            }
+        }
     }
 }

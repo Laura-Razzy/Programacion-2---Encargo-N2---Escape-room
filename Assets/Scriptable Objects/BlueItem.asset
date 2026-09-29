@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: BlueItem
   m_EditorClassIdentifier: 
   itemName: Blue Item
-  itemDescription: It's Blue
+  itemDescription: It's Bliue
   itemMaterial: {fileID: 2100000, guid: 65252462fabd1b14a84279725c5ad794, type: 2}
   itemPosition: {x: 0, y: 1, z: 5}
