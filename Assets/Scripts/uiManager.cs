@@ -26,13 +26,14 @@ public class uiManager : MonoBehaviour
 
     void Update()
     {
+        // Detecta los layers "Player" y "Wall", luego revisa si se esta mirando a "Player" y si se apreta e, lo meta en el inventario y lo destruye.
         if (Physics.Raycast(playerMovement.camTransform.position, playerMovement.camTransform.forward, out RaycastHit hit, playerRayDistance, itemDetection))
         {
             Debug.DrawRay(playerMovement.camTransform.position, playerMovement.camTransform.forward, Color.green);
             if (hit.transform.gameObject.layer == 7)
             {
-                interactionPrompt.text = "[E] Pick Up";
-                if (Input.GetKeyDown("e"))
+                interactionPrompt.text = "[F] Pick Up";
+                if (Input.GetKeyDown("f"))
                 {
                     itemSave = hit.transform.GetComponent<Item>().itemData;
                     GetComponent<PlayerInventory>().saveInInventory();
