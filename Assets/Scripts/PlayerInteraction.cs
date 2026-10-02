@@ -71,7 +71,7 @@ public class PlayerInteraction : MonoBehaviour
         }
     }
     void OnTriggerEnter(Collider other)
-    // Detecta si el jugador colisiona con el enemigo, si tiene la ultimate potion lo mata, si no, muere.
+    // Detecta si el jugador colisiona con el enemigo, si tiene la ultimate potion lo mata y spawnea la llave, si no, muere.
     {
         if (other.gameObject.name == "Enemy")
         {

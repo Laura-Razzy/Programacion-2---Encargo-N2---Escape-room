@@ -7,7 +7,7 @@ public class Item : MonoBehaviour
     {
         gameObject.name = itemData.itemName;
         gameObject.GetComponent<MeshRenderer>().material = itemData.itemMaterial;
-        if (gameObject.name != "Key")
+        if (gameObject.name != "Key") // Si es llave quiero que spawnee derechamente donde muere el enemigo.
         {
             gameObject.transform.position = itemData.itemPosition;
         }

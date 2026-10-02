@@ -54,18 +54,28 @@ public class EnemyPatrol : MonoBehaviour
                 if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
                 {
                     ChangeState(STATE.Idle);
+                    elapsedIdleTime = 0;
                 }
                 break;
-            case STATE.ChasingSound:
+            case STATE.ChasingSound: //Entra en este estado SOLAMENTE si choca con una de los peos que deja el jugador.
                 if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
                 {
-                    ChangeState(STATE.Patroling);
+                    ChangeState(STATE.Idle);
+                    elapsedIdleTime = 0;
                 }
                 break;
             case STATE.ChasingPlayer:
                 if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
                 {
-                    ChangeState(STATE.ChasingSound);
+                    if (canSeePlayer == true) // Si sigue viendo al jugador despues de llegar a donde perseguia, sigue persiguiendo.
+                    {
+                        ChangeState(STATE.ChasingPlayer);
+                    }
+                    else // Si no, vuelve a idle.
+                    {
+                        ChangeState(STATE.Idle);
+                        elapsedIdleTime = 0;
+                    }
                 }
                 break;
         }
@@ -93,7 +103,7 @@ public class EnemyPatrol : MonoBehaviour
 
         }
     }
-    void LineOfSight()
+    void LineOfSight() // Raycast que basicamente revisa si puede ver al player desde lejos.
     {
         LOS = eyes.localEulerAngles.y;
         LOS = Mathf.Clamp(LOS, -90, 90);

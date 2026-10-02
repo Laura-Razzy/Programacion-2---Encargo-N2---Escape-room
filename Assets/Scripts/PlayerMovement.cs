@@ -26,7 +26,7 @@ public class PlayerMovement : MonoBehaviour
         Move();
         if (elapsedTime >= noiseTime)
         {
-            Instantiate(NoisePrefab, gameObject.transform);
+            Instantiate(NoisePrefab, gameObject.transform); // Todos los segundos el jugador deja un peo que dura un segundo. Este peo lo puede recojer el enemigo como ruido.
             elapsedTime = 0;
         }
     }
