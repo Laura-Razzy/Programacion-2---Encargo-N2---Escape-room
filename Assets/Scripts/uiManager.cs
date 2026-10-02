@@ -7,8 +7,9 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     private PlayerInventory playerInventory;
+    private PlayerInteraction playerInteraction;
     public TextMeshProUGUI interactionPrompt, textBox;
-    public ItemScriptable itemSave = null;
+    public ItemScriptable itemSave = null, itemLoad = null;
     public GameObject pauseMenu;
     public enum interactionState {None, PickUp, Interact};
     public interactionState currentInteractionState = interactionState.None;
@@ -19,6 +20,7 @@ public class UIManager : MonoBehaviour
         interactionPrompt = GameObject.Find("Interact").GetComponent<TextMeshProUGUI>();
         textBox = GameObject.Find("Text").GetComponent<TextMeshProUGUI>();
         playerInventory = GetComponent<PlayerInventory>();
+        playerInteraction = GetComponent<PlayerInteraction>();
     }
 
     void Start()
@@ -81,6 +83,32 @@ public class UIManager : MonoBehaviour
             {
                 GameObject.Find(slotName).GetComponent<Image>().color = Color.black;
             }
+        }
+    }
+    public void ShowItemDescription(int slot)
+    {
+        if (playerInventory.inventory[slot] != null)
+        {
+            textBox.text = playerInventory.inventory[slot].itemDescription;
+        }
+        else
+        {
+            textBox.text = "An empty slot...";
+        }
+    }
+
+    public void HideItemDescription()
+    {
+        textBox.text = null;
+    }
+
+    public void ClickItem(int index)
+    {
+        if (playerInteraction.lookingAtPot == true)
+        {
+            itemLoad = playerInventory.inventory[index];
+            GameObject.Find("Pot").GetComponent<PuzzleManager>().AddPotion(index);
+            GameObject.Find($"Slot {index + 1}").GetComponent<Image>().color = Color.black;
         }
     }
 }
