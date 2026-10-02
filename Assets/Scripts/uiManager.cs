@@ -2,49 +2,85 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.Rendering;
 using Unity.VisualScripting;
+using UnityEngine.UI;
 
-public class uiManager : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
-    private PlayerMovement playerMovement;
-    private Item item;
-    private LayerMask itemDetection;
-    [SerializeField] private float playerRayDistance = 10f;
-    [SerializeField] TextMeshProUGUI interactionPrompt;
+    private PlayerInventory playerInventory;
+    public TextMeshProUGUI interactionPrompt, textBox;
     public ItemScriptable itemSave = null;
+    public GameObject pauseMenu;
+    public enum interactionState {None, PickUp, Interact};
+    public interactionState currentInteractionState = interactionState.None;
 
     void Awake()
     {
+        pauseMenu.SetActive(true);
         interactionPrompt = GameObject.Find("Interact").GetComponent<TextMeshProUGUI>();
-        playerMovement = GetComponent<PlayerMovement>();
+        textBox = GameObject.Find("Text").GetComponent<TextMeshProUGUI>();
+        playerInventory = GetComponent<PlayerInventory>();
     }
 
     void Start()
     {
         interactionPrompt.text = null;
-        itemDetection = LayerMask.GetMask("Wall", "Item");
+        textBox.text = null;
+        pauseMenu.SetActive(false);
     }
 
     void Update()
     {
-        // Detecta los layers "Player" y "Wall", luego revisa si se esta mirando a "Player" y si se apreta e, lo meta en el inventario y lo destruye.
-        if (Physics.Raycast(playerMovement.camTransform.position, playerMovement.camTransform.forward, out RaycastHit hit, playerRayDistance, itemDetection))
+        if (Input.GetKeyDown("e"))
         {
-            Debug.DrawRay(playerMovement.camTransform.position, playerMovement.camTransform.forward, Color.green);
-            if (hit.transform.gameObject.layer == 7)
+            pauseMenu.SetActive(!pauseMenu.activeSelf);
+            if (pauseMenu.activeSelf == true)
             {
-                interactionPrompt.text = "[F] Pick Up";
-                if (Input.GetKeyDown("f"))
-                {
-                    itemSave = hit.transform.GetComponent<Item>().itemData;
-                    GetComponent<PlayerInventory>().saveInInventory();
-                    Destroy(hit.transform.gameObject);
-                }
+                GetInventory();
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+                Time.timeScale = 0f;
+            }
+            else
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+                Time.timeScale = 1f;
             }
         }
-        else
+    }
+
+    public void SetInteractPrompt(interactionState uiStateUpdate) // Cambia el texto del prompt dependiendo de la accion que se pueda hacer.
+    {
+        switch (uiStateUpdate)
         {
-            Debug.DrawRay(playerMovement.camTransform.position, playerMovement.camTransform.forward, Color.red);
-            interactionPrompt.text = null;
+            case interactionState.PickUp:
+                interactionPrompt.text = "[F] Pick Up";
+                currentInteractionState = interactionState.PickUp;
+                break;
+            case interactionState.Interact:
+                interactionPrompt.text = "[F] Interact";
+                currentInteractionState = interactionState.Interact;
+                break;
+            case interactionState.None:
+                interactionPrompt.text = null;
+                currentInteractionState = interactionState.None;
+                break;
+        }
+    }
+
+    public void GetInventory()
+    {
+        for (int i = 0; i < playerInventory.inventory.Length; i++)
+        {
+            string slotName = $"Slot {i + 1}";
+            if (playerInventory.inventory[i] != null)
+            {
+                GameObject.Find(slotName).GetComponent<Image>().color = playerInventory.inventory[i].itemMaterial.color;
+            }
+            else
+            {
+                GameObject.Find(slotName).GetComponent<Image>().color = Color.black;
+            }
         }
     }
 }

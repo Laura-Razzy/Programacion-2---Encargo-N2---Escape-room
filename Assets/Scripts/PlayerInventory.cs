@@ -3,8 +3,7 @@ using UnityEngine;
 
 public class PlayerInventory : MonoBehaviour
 {
-    private LayerMask layerDetection;
-    [SerializeField] private ItemScriptable[] inventory = new ItemScriptable[3];
+    public ItemScriptable[] inventory = new ItemScriptable[3];
 
     public void saveInInventory() // Busca la ultima variable guardada en uiManager.cs y la guarda en el slot mas bajo del inventario.
     {
@@ -12,7 +11,7 @@ public class PlayerInventory : MonoBehaviour
         {
             if (inventory[i] == null)
             {
-                inventory[i] = GetComponent<uiManager>().itemSave;
+                inventory[i] = GetComponent<UIManager>().itemSave;
                 break;
             }
         }

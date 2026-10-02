@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [HideInInspector] public Transform camTransform;
-    private float mouseSens = 300f, moveSpeed = 5f, vRotation, mouseX, mouseY, kbH, kbV, camFOV = 60f;
-    private enum MovementState {Normal, Sprinting, Crouching}
+    public Transform camTransform;
+    [SerializeField] private float mouseSens = 300f, moveSpeed = 5f, vRotation, mouseX, mouseY, kbH, kbV, camFOV = 60f;
+    [SerializeField] private enum MovementState {Normal, Sprinting, Crouching}
     private MovementState CurrentMovementState;
 
     void Start() // Implementa variables para el control de primera persona.
@@ -15,13 +15,13 @@ public class PlayerMovement : MonoBehaviour
         camFOV = GetComponentInChildren<Camera>().fieldOfView;
     }
 
-    void Update() // Actualiza variables dependiendo del state -> Agarra Inputs de movimiento -> Mueve
+    void Update() // Agarra Inputs de movimiento -> Actualiza variables dependiendo del state ->  Mueve
     {
-        StateCheck(); 
         mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * mouseSens;
         mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * mouseSens;
         kbH = Input.GetAxisRaw("Horizontal") * Time.deltaTime * moveSpeed;
         kbV = Input.GetAxisRaw("Vertical") * Time.deltaTime * moveSpeed;
+        StateCheck(); 
         Move();
     }
 
@@ -53,6 +53,7 @@ public class PlayerMovement : MonoBehaviour
             case MovementState.Sprinting:
                 moveSpeed = 10f;
                 Camera.main.fieldOfView = 70f;
+                camTransform.localPosition = new Vector3(0, 0.75f, 0);
                 break;
             case MovementState.Crouching:
                 moveSpeed = 2.5f;
