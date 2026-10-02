@@ -10,13 +10,15 @@ public class UIManager : MonoBehaviour
     private PlayerInteraction playerInteraction;
     public TextMeshProUGUI interactionPrompt, textBox;
     public ItemScriptable itemSave = null, itemLoad = null;
-    public GameObject pauseMenu;
+    public GameObject pauseMenu, winScreen, loseScreen;
     public enum interactionState {None, PickUp, Interact};
     public interactionState currentInteractionState = interactionState.None;
 
     void Awake()
     {
         pauseMenu.SetActive(true);
+        winScreen.SetActive(true);
+        loseScreen.SetActive(true);
         interactionPrompt = GameObject.Find("Interact").GetComponent<TextMeshProUGUI>();
         textBox = GameObject.Find("Text").GetComponent<TextMeshProUGUI>();
         playerInventory = GetComponent<PlayerInventory>();
@@ -28,26 +30,44 @@ public class UIManager : MonoBehaviour
         interactionPrompt.text = null;
         textBox.text = null;
         pauseMenu.SetActive(false);
+        winScreen.SetActive(false);
+        loseScreen.SetActive(false);
+        Time.timeScale = 1f;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown("e"))
+        if (winScreen.activeSelf == false && loseScreen.activeSelf == false)
         {
-            pauseMenu.SetActive(!pauseMenu.activeSelf);
-            if (pauseMenu.activeSelf == true)
+            if (Input.GetKeyDown("e"))
             {
+                pauseMenu.SetActive(!pauseMenu.activeSelf);
+                if (pauseMenu.activeSelf == true)
+                {
                 GetInventory();
                 Cursor.visible = true;
                 Cursor.lockState = CursorLockMode.None;
                 Time.timeScale = 0f;
-            }
-            else
-            {
+                }
+                else
+                {
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
                 Time.timeScale = 1f;
+                }
             }
+        }
+        else if (winScreen.activeSelf == true)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Time.timeScale = 0f;
+        }
+        else if (loseScreen.activeSelf == true)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Time.timeScale = 0f;
         }
     }
 
@@ -60,7 +80,7 @@ public class UIManager : MonoBehaviour
                 currentInteractionState = interactionState.PickUp;
                 break;
             case interactionState.Interact:
-                interactionPrompt.text = "[F] Interact";
+                interactionPrompt.text = "There's probably something you can do here...";
                 currentInteractionState = interactionState.Interact;
                 break;
             case interactionState.None:
@@ -104,11 +124,28 @@ public class UIManager : MonoBehaviour
 
     public void ClickItem(int index)
     {
-        if (playerInteraction.lookingAtPot == true)
+        if (playerInventory.inventory[index] != null)
         {
-            itemLoad = playerInventory.inventory[index];
-            GameObject.Find("Pot").GetComponent<PuzzleManager>().AddPotion(index);
-            GameObject.Find($"Slot {index + 1}").GetComponent<Image>().color = Color.black;
+            if (playerInteraction.lookingAtPot == true && playerInteraction.potIsReady == false)
+            {
+                itemLoad = playerInventory.inventory[index];
+                GameObject.Find("Pot").GetComponent<PuzzleManager>().AddPotion(index);
+                GameObject.Find($"Slot {index + 1}").GetComponent<Image>().color = Color.black;
+            }
+            else if (playerInventory.inventory[index].itemName == "Ultimate Potion")
+            {
+                playerInteraction.UltimatePower = true;
+                playerInventory.inventory[index] = null;
+                GetInventory();
+            }
+            else if (playerInventory.inventory[index].itemName == "Key" && playerInteraction.lookingAtDoor == true)
+            {
+                Destroy(GameObject.Find("Door"));
+                playerInventory.inventory[index] = null;
+                GetInventory();
+                pauseMenu.SetActive(false);
+                winScreen.SetActive(true);
+            }
         }
     }
 }

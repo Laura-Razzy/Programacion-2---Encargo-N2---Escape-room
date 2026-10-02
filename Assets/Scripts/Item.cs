@@ -7,6 +7,9 @@ public class Item : MonoBehaviour
     {
         gameObject.name = itemData.itemName;
         gameObject.GetComponent<MeshRenderer>().material = itemData.itemMaterial;
-        gameObject.transform.position = itemData.itemPosition;
+        if (gameObject.name != "Key")
+        {
+            gameObject.transform.position = itemData.itemPosition;
+        }
     }
 }

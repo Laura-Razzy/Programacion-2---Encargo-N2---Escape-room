@@ -3,8 +3,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Transform camTransform;
-    [SerializeField] private float mouseSens = 300f, moveSpeed = 5f, vRotation, mouseX, mouseY, kbH, kbV, camFOV = 60f;
+    [SerializeField] private float mouseSens = 300f, moveSpeed = 5f, vRotation, mouseX, mouseY, kbH, kbV, camFOV = 60f, elapsedTime, noiseTime = 1f;
     [SerializeField] private enum MovementState {Normal, Sprinting, Crouching}
+    [SerializeField] private GameObject NoisePrefab;
     private MovementState CurrentMovementState;
 
     void Start() // Implementa variables para el control de primera persona.
@@ -16,13 +17,18 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void Update() // Agarra Inputs de movimiento -> Actualiza variables dependiendo del state ->  Mueve
-    {
+    {   elapsedTime += Time.deltaTime;
         mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * mouseSens;
         mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * mouseSens;
         kbH = Input.GetAxisRaw("Horizontal") * Time.deltaTime * moveSpeed;
         kbV = Input.GetAxisRaw("Vertical") * Time.deltaTime * moveSpeed;
         StateCheck(); 
         Move();
+        if (elapsedTime >= noiseTime)
+        {
+            Instantiate(NoisePrefab, gameObject.transform);
+            elapsedTime = 0;
+        }
     }
 
     void StateCheck() // Cambia los states dependiendo en que teclas esten apretadas y luego cambia las variables dependiendo en los states.

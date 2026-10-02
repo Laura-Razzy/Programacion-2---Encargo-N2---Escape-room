@@ -8,8 +8,10 @@ public class EnemyPatrol : MonoBehaviour
     private NavMeshAgent agent;
     private LayerMask layerDetection;
     private float currentIdleTime, elapsedIdleTime, LOS, enemyRayDistance = 10000f;
-    private enum STATE{Idle, Patroling, ChasingSound, ChasingPlayer}
-    STATE currentState;
+    public enum STATE{Idle, Patroling, ChasingSound, ChasingPlayer}
+    [SerializeField] private bool canSeePlayer = false;
+    private STATE currentState;
+    public Transform heardNoise;
     private Transform playerTransform, eyes;
     private Transform[] patrolPointsArray = new Transform[6];
 
@@ -55,17 +57,21 @@ public class EnemyPatrol : MonoBehaviour
                 }
                 break;
             case STATE.ChasingSound:
-                Debug.Log("I heard something...");
-                ChangeState(STATE.Idle);
+                if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+                {
+                    ChangeState(STATE.Patroling);
+                }
                 break;
             case STATE.ChasingPlayer:
-                Debug.Log("I see you!!!!!!");
-                ChangeState(STATE.Idle);
+                if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+                {
+                    ChangeState(STATE.ChasingSound);
+                }
                 break;
         }
     }
 
-    void ChangeState(STATE enemyStateUpdate) // Funcion que actualizado el state.
+    public void ChangeState(STATE enemyStateUpdate) // Funcion que actualizado el state.
     {
         currentState = enemyStateUpdate;
         switch (currentState)
@@ -77,8 +83,12 @@ public class EnemyPatrol : MonoBehaviour
                 Debug.Log("Enemy Changes Direction");
                 break;
             case STATE.ChasingSound:
+                agent.SetDestination(heardNoise.position);
+                Debug.Log("I heard something...");
                 break;
             case STATE.ChasingPlayer:
+                agent.SetDestination(playerTransform.position);
+                Debug.Log("I see you!!!!!!");
                 break;
 
         }
@@ -93,11 +103,13 @@ public class EnemyPatrol : MonoBehaviour
             if (hit.transform.gameObject.name == "Player")
             {
                 ChangeState(STATE.ChasingPlayer);
+                canSeePlayer = true;
             }
         }
         else
         {
             Debug.DrawRay(eyes.position, eyes.forward, Color.red);
+            canSeePlayer = false;
         }
     }
 }

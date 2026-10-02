@@ -6,7 +6,8 @@ public class PlayerInteraction : MonoBehaviour
     private UIManager uiManager;
     private Item item;
     private LayerMask itemDetection;
-    public bool PotIsReady = false, lookingAtPot = false, potisReady = false;
+    [SerializeField] private GameObject KeyPrefab;
+    public bool lookingAtPot = false, lookingAtDoor = false, potIsReady = false, UltimatePower = false;
     [SerializeField] private float playerRayDistance = 10f;
     void Start()
     {
@@ -23,47 +24,65 @@ public class PlayerInteraction : MonoBehaviour
             Debug.DrawRay(playerMovement.camTransform.position, playerMovement.camTransform.forward, Color.green);
             if (hit.transform.gameObject.layer == 7) // 7 es el layer "Item"
             {
+                lookingAtPot = false;
+                lookingAtDoor = false;
                 uiManager.SetInteractPrompt(UIManager.interactionState.PickUp); // Cambia el texto del prompt a "Pick Up"
                 if (Input.GetKeyDown("f")) // Si apreta f
                 {
                     uiManager.itemSave = hit.transform.GetComponent<Item>().itemData;
                     GetComponent<PlayerInventory>().saveInInventory();
                     Destroy(hit.transform.gameObject);
+                    uiManager.SetInteractPrompt(UIManager.interactionState.None); // Cambia el texto del prompt a "None"
                 }
             }
             else if (hit.transform.gameObject.layer == 8) // 8 es el layer "Interactable"
             {
-                if (potisReady == true)
+                uiManager.SetInteractPrompt(UIManager.interactionState.Interact);
+                if (hit.transform.gameObject.name == "Pot") // Si el objeto que se esta mirando es la olla
                 {
-                    uiManager.SetInteractPrompt(UIManager.interactionState.Interact); // Cambia el texto del prompt a "Interact"
-                }
-                else
-                {
-                    uiManager.SetInteractPrompt(UIManager.interactionState.None);
-                }
-                
-                if (hit.transform.gameObject.name == "Pot")
-                {
-                    if (Input.GetKeyDown("f") && potisReady == true)
-                    {
-                        uiManager.interactionPrompt.text = "I did it! I made the potion!";
-                    }
-                    else if (Input.GetKeyDown("f") && potisReady == false)
-                    {
-                        uiManager.interactionPrompt.text = "I need to add 3 different potions to the cauldron.";
-                    }
                     lookingAtPot = true;
+                    lookingAtDoor = false;
                 }
-                else
+                else if (hit.transform.gameObject.name == "Door") // Si el objeto que se esta mirando es la puerta
                 {
+                    lookingAtDoor = true;
                     lookingAtPot = false;
                 }
+                else // Si no esta mirando ni la olla ni la puerta
+                {
+                    uiManager.SetInteractPrompt(UIManager.interactionState.None);
+                    lookingAtPot = false;
+                    lookingAtDoor = false;
+                }
             }
-            else
+            else // Si no esta mirando nada interactuable
             {
                 Debug.DrawRay(playerMovement.camTransform.position, playerMovement.camTransform.forward, Color.red);
                 uiManager.SetInteractPrompt(UIManager.interactionState.None);
                 lookingAtPot = false;
+                lookingAtDoor = false;
+            }
+        }
+        else // Si no esta mirando nada
+        {
+            uiManager.SetInteractPrompt(UIManager.interactionState.None);
+            lookingAtPot = false;
+            lookingAtDoor = false;
+        }
+    }
+    void OnTriggerEnter(Collider other)
+    // Detecta si el jugador colisiona con el enemigo, si tiene la ultimate potion lo mata, si no, muere.
+    {
+        if (other.gameObject.name == "Enemy")
+        {
+            if (UltimatePower == true)
+            {
+                Instantiate(KeyPrefab, other.transform.position, Quaternion.identity);
+                Destroy(other.gameObject);
+            }
+            else
+            {
+                uiManager.loseScreen.SetActive(true);
             }
         }
     }

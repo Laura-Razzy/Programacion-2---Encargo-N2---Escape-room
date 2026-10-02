@@ -5,6 +5,7 @@ public class PuzzleManager : MonoBehaviour
     private UIManager uiManager;
     private PlayerInventory playerInventory;
     private PlayerInteraction playerInteraction;
+    public GameObject UltimatePotionPrefab;
     public bool puzzleCompleted = false;
     public ItemScriptable[] potions = new ItemScriptable[3];
 
@@ -31,7 +32,8 @@ public class PuzzleManager : MonoBehaviour
         {
             if (potions[0] != potions[1] && potions[0] != potions[2] && potions[1] != potions[2])
             {
-                playerInteraction.potisReady = true;
+                playerInteraction.potIsReady = true;
+                GameObject UltimatePotion = Instantiate(UltimatePotionPrefab);
             }
             else
             {

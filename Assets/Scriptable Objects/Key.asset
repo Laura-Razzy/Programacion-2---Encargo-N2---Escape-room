@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 733810215a60de842a0a1943c45e9b56, type: 3}
-  m_Name: Ultimate Potion
+  m_Name: Key
   m_EditorClassIdentifier: 
-  itemName: Ultimate Potion
-  itemDescription: A potion for killing witches...
-  itemMaterial: {fileID: 2100000, guid: 3953b80e0b1958f4fb62c00e297f7031, type: 2}
-  itemPosition: {x: 0, y: 1.5, z: -3}
+  itemName: Key
+  itemDescription: The key out of this cursed place!
+  itemMaterial: {fileID: 2100000, guid: 644dda0aa8290b54b8a1a401b42b5dca, type: 2}
+  itemPosition: {x: 0, y: 0, z: 0}
