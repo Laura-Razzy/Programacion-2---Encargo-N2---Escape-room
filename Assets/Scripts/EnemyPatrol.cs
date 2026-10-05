@@ -14,6 +14,7 @@ public class EnemyPatrol : MonoBehaviour
     public Transform heardNoise;
     private Transform playerTransform, eyes;
     private Transform[] patrolPointsArray = new Transform[6];
+    public Animator anim;
 
     void Awake()
     {
@@ -87,16 +88,23 @@ public class EnemyPatrol : MonoBehaviour
         switch (currentState)
         {
             case STATE.Idle:
+                anim.SetBool("Walking", false);
+                anim.SetBool("Running", false);
                 break;
             case STATE.Patroling:
+                anim.SetBool("Walking", true);
+                anim.SetBool("Running", false);
                 agent.SetDestination(patrolPointsArray[Random.Range(0, patrolPointsArray.Length - 1)].position);
                 Debug.Log("Enemy Changes Direction");
                 break;
             case STATE.ChasingSound:
+                anim.SetBool("Walking", true);
+                anim.SetBool("Running", false);
                 agent.SetDestination(heardNoise.position);
                 Debug.Log("I heard something...");
                 break;
             case STATE.ChasingPlayer:
+                anim.SetBool("Running", true);
                 agent.SetDestination(playerTransform.position);
                 Debug.Log("I see you!!!!!!");
                 break;
