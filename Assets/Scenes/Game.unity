@@ -1146,7 +1146,7 @@ GameObject:
   - component: {fileID: 492727477}
   - component: {fileID: 492727476}
   m_Layer: 7
-  m_Name: Purple Item
+  m_Name: Purple Potion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1405,7 +1405,7 @@ GameObject:
   - component: {fileID: 513887620}
   - component: {fileID: 513887619}
   m_Layer: 7
-  m_Name: Yellow Item
+  m_Name: Yellow Potion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3455,6 +3455,9 @@ MonoBehaviour:
   kbH: 0
   kbV: 0
   camFOV: 60
+  elapsedTime: 0
+  noiseTime: 1
+  NoisePrefab: {fileID: 3098872538587910343, guid: 4fe795960c4ed1c4aae7d8e746f685fb, type: 3}
 --- !u!114 &1366699647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3767,7 +3770,7 @@ GameObject:
   - component: {fileID: 1489613071}
   - component: {fileID: 1489613070}
   m_Layer: 7
-  m_Name: Blue Item
+  m_Name: Blue Potion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4783,6 +4786,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4100740611ee2554cbcfb680ddb31180, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canSeePlayer: 0
+  heardNoise: {fileID: 0}
 --- !u!195 &1821180191
 NavMeshAgent:
   m_ObjectHideFlags: 0
